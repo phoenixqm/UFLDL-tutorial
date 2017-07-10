@@ -9,7 +9,7 @@ xlabel('Age in years')
 m = length(y);
 x = [ones(m, 1), x]; %add a column of ones to x
 
-theta = zeros(size(x,2),1);
+theta = zeros(size(x(1,:)))';
 alpha = 0.07;
 
 delta = ones(size(theta));

@@ -17,12 +17,6 @@ g = inline('1.0 ./ (1.0 + exp(-z))');
 
 theta = zeros(size(x,2),1);
 
-J = zeros(20, 1);
-
-size(h .* 1-h)
-size(h)
-size(x)
-
 for i = 1:20
   h = g(x*theta);
   err = h - y;
