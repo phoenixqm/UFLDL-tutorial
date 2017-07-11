@@ -15,38 +15,31 @@ plot(x(neg, 2), x(neg, 3), 'o')
 
 g = inline('1.0 ./ (1.0 + exp(-z))'); 
 
-theta = zeros(size(x,2),1);
+initTheta = zeros(size(x,2),1);
 
 MAX_ITR = 20
 
-for i = 1:MAX_ITR
-  h = g(x*theta);
-  err = h - y;
-  grad = x' * err / m;
+% function[jVal, gradient] = costFunc(theta)
+%   h = g(x*theta);
+%   err = h - y;
+%   jVal =(1/m)*sum(-y.*log(h) - (1-y).*log(1-h));
+%   gradient = x' * err / m;
+% end
 
-  hess = (1/m).*x' * diag(h) * diag(1-h) * x;
-  
-  theta = theta - hess\grad;
-    
-   % Calculate J (for testing convergence)
-   J(i) =(1/m)*sum(-y.*log(h) - (1-y).*log(1-h));
-    
-end
+options = optimset('GradObj', 'on', 'MaxIter', 100);
 
-theta
+[optTheta, fVal, exitFlag] = fminunc(@(theta)costFunc(theta,x,y,m), initTheta, options)
+
+optTheta
 
 % Plot Newton's method result
 % Only need 2 points to define a line, so choose two endpoints
 plot_x = [min(x(:,2))-2,  max(x(:,2))+2];
 % Calculate the decision boundary line
-plot_y = (-1./theta(3)).*(theta(2).*plot_x +theta(1));
+plot_y = (-1./optTheta(3)).*(optTheta(2).*plot_x +optTheta(1));
 plot(plot_x, plot_y)
 legend('Admitted', 'Not admitted', 'Decision Boundary')
 hold off
 
-% Plot J
-figure
-plot(0:MAX_ITR-1, J, 'o--', 'MarkerFaceColor', 'r', 'MarkerSize', 8)
-xlabel('Iteration'); ylabel('J')
-% Display J
-J
+
+
